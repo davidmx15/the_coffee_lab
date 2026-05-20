@@ -15,7 +15,7 @@
         <div class="flex items-center space-x-4">
             {% if user.is_authenticated %}
                 <span class="text-gray-700">Hola, {{ user.username }}</span>
-                
+
                 {% if user.perfil.es_repartidor %}
                     <!-- Menú para repartidor -->
                     <a href="{% url 'perfil' %}" class="text-blue-600 hover:underline">Mi Perfil</a>
@@ -29,9 +29,8 @@
                     <a href="{% url 'mis_kits' %}" class="text-purple-600 hover:underline">Mis Kits</a>
                     <a href="{% url 'ver_carrito' %}" class="text-blue-600 hover:underline">🛒 Carrito</a>
                     <a href="{% url 'mis_pedidos' %}" class="text-gray-700 hover:underline">📦 Mis pedidos</a>
-                    <a href="{% url 'barista' %}" class="text-purple-600 hover:underline">☕ Barista Virtual</a>
                 {% endif %}
-                
+
                 <form action="{% url 'logout' %}" method="post" class="inline">
                     {% csrf_token %}
                     <button type="submit" class="text-red-600 hover:underline bg-transparent">Cerrar sesión</button>

@@ -99,17 +99,56 @@ class KitPersonalizado(models.Model):
         energia = atributos['energia']
         dulzor = atributos['dulzor']
         intensidad = atributos['intensidad']
-        if energia >= 7 and intensidad >= 7:
-            return "Explosión de Sabor"
-        elif dulzor >= 7 and intensidad <= 3:
-            return "Dulce Tentación"
-        elif energia <= 3 and dulzor <= 3:
-            return "Clásico Suave"
-        elif intensidad >= 7 and dulzor <= 3:
-            return "Intenso y Audaz"
-        else:
-            return "Creación Personalizada"
         
+        # Nombres muy intensos/energéticos
+        if energia >= 8 and intensidad >= 8:
+            return "🔥 Explosión Matutina"
+        if energia >= 7 and intensidad >= 7:
+            return "⚡ Tormenta de Café"
+        
+        # Energía + Dulzor
+        if energia >= 7 and dulzor >= 7:
+            return "🍬 Chispa Dulce"
+        
+        # Solo intensidad alta
+        if intensidad >= 8 and dulzor <= 3:
+            return "☕ Negro Intenso"
+        if intensidad >= 6 and dulzor <= 4:
+            return "🌋 Café Volcánico"
+        
+        # Solo dulzor alto
+        if dulzor >= 8 and intensidad <= 3:
+            return "🍯 Caricia de Miel"
+        if dulzor >= 6 and intensidad <= 4:
+            return "🍭 Nube de Azúcar"
+        
+        # Solo energía alta
+        if energia >= 8:
+            return "💪 Despertar Energético"
+        if energia >= 6:
+            return "⚡ Recarga Matinal"
+        
+        # Combinaciones equilibradas
+        if energia >= 5 and dulzor >= 5 and intensidad >= 5:
+            return "🌈 Armonía Perfecta"
+        if energia >= 5 and dulzor >= 5:
+            return "🌸 Suave Equilibrio"
+        if dulzor >= 5 and intensidad >= 5:
+            return "🌿 Contraste Dulce"
+        if energia >= 5 and intensidad >= 5:
+            return "🔥 Equilibrio Intenso"
+        
+        # Casos restantes (bajos o medios)
+        if energia <= 3 and dulzor <= 3 and intensidad <= 3:
+            return "🍃 Sutil y Suave"
+        if energia <= 4:
+            return "🌙 Relajante"
+        if dulzor <= 4:
+            return "🍫 Toque Amargo"
+        if intensidad <= 4:
+            return "🥛 Cremoso y Suave"
+        
+        return "✨ Creación Personalizada"
 # ------------------------------------------------------------
 # 3. Tabla intermedia para cantidad de ingredientes en un kit
 # ------------------------------------------------------------

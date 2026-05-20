@@ -58,7 +58,7 @@ def crear_kit(request):
         kit.nombre = kit.nombre_sugerido()
         kit.save()
         return redirect('mis_kits')
-    
+
     ingredientes = Ingrediente.objects.all().order_by('categoria')
     return render(request, 'tienda/crear_kit.html', {'ingredientes': ingredientes})
 
@@ -150,27 +150,36 @@ def detalle_kit(request, kit_id):
 
 @login_required
 def barista_virtual(request):
-    if hasattr(request.user, 'perfil') and request.user.perfil.es_repartidor:
-        return redirect('pedidos_pendientes')
     recomendaciones = []
     if request.method == 'POST':
-        energia_deseada = int(request.POST.get('energia', 3))
-        dulzor_deseado = int(request.POST.get('dulzor', 3))
-        intensidad_deseada = int(request.POST.get('intensidad', 3))
-        
+        energia_deseada = int(request.POST.get('energia', 5))
+        dulzor_deseado = int(request.POST.get('dulzor', 5))
+        intensidad_deseada = int(request.POST.get('intensidad', 5))
+
+        # Obtener todos los kits (propios + predefinidos)
         kits_a_evaluar = KitPersonalizado.objects.filter(
             Q(usuario=request.user) | Q(usuario__isnull=True)
         )
-        
+
         lista_con_diferencia = []
         for kit in kits_a_evaluar:
             attrs = kit.calcular_atributos()
-            diff = abs(attrs['energia'] - energia_deseada) + abs(attrs['dulzor'] - dulzor_deseado) + abs(attrs['intensidad'] - intensidad_deseada)
-            lista_con_diferencia.append((kit, diff))
-        
+            # Calcular diferencia absoluta total (máximo 30 puntos)
+            diff = abs(attrs['energia'] - energia_deseada) + \
+                   abs(attrs['dulzor'] - dulzor_deseado) + \
+                   abs(attrs['intensidad'] - intensidad_deseada)
+            # Solo considerar si la diferencia es <= 8 (puedes ajustar este umbral)
+            if diff <= 8:
+                lista_con_diferencia.append((kit, diff))
+
+        # Ordenar de menor a mayor diferencia
         lista_con_diferencia.sort(key=lambda x: x[1])
-        recomendaciones = [kit for kit, diff in lista_con_diferencia[:5]]
-    
+        # Tomar solo los 3 primeros (los más cercanos)
+        recomendaciones = [kit for kit, diff in lista_con_diferencia[:3]]
+
+        if not recomendaciones:
+            messages.info(request, "No encontramos kits muy cercanos a tus gustos. ¡Prueba crear el tuyo propio!")
+
     return render(request, 'tienda/barista.html', {'recomendaciones': recomendaciones})
 
 @login_required
@@ -181,9 +190,9 @@ def checkout(request):
     items = carrito.items.all()
     if not items:
         return redirect('ver_carrito')
-    
+
     total = carrito.total_carrito()
-    
+
     if request.method == 'POST':
         pedido = Pedido.objects.create(
             usuario=request.user,
@@ -200,7 +209,7 @@ def checkout(request):
             )
         items.delete()
         return redirect('mis_pedidos')
-    
+
     context = {
         'items': items,
         'total': total,
