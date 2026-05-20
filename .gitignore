@@ -1,0 +1,32 @@
+# Entorno virtual (venv) – NO se sube a GitHub
+venv/
+env/
+ENV/
+
+# Base de datos SQLite (se genera automáticamente al migrar)
+db.sqlite3
+*.db
+
+# Archivos de caché y compilación de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Archivos de configuración local (claves secretas, etc.)
+.env
+*.env
+local_settings.py
+
+# Archivos de editor (VS Code)
+.vscode/
+*.code-workspace
+
+# Archivos de sistema (Windows, macOS)
+Thumbs.db
+.DS_Store
+
+# Archivos de logs y media subida (si los tuvieras después)
+*.log
+media/

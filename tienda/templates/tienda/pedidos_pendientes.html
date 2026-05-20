@@ -1,0 +1,32 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">📦 Pedidos pendientes de entrega</h2>
+
+{% if pedidos %}
+    {% for pedido in pedidos %}
+    <div class="bg-white p-4 rounded shadow mb-4">
+        <div class="flex justify-between items-center border-b pb-2 mb-2">
+            <span class="font-bold">Pedido #{{ pedido.id }}</span>
+            <span class="text-gray-600">{{ pedido.fecha|date:"d/m/Y H:i" }}</span>
+            <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-sm">PENDIENTE</span>
+        </div>
+        <p><strong>Cliente:</strong> {{ pedido.usuario.username }}</p>
+        <p><strong>Teléfono:</strong> {{ pedido.usuario.perfil.telefono|default:"No proporcionado" }}</p>
+        <p><strong>Dirección:</strong> {{ pedido.usuario.perfil.direccion|default:"No proporcionada" }}</p>
+        <p><strong>Total:</strong> ${{ pedido.total }}</p>
+        <ul class="mt-2 text-sm">
+            {% for item in pedido.pedidokit_set.all %}
+            <li>{{ item.cantidad }} x {{ item.kit.nombre }} - ${{ item.precio_unitario }} c/u</li>
+            {% endfor %}
+        </ul>
+        <form method="post" action="{% url 'completar_pedido' pedido.id %}" class="mt-3">
+            {% csrf_token %}
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">✅ Marcar como completado</button>
+        </form>
+    </div>
+    {% endfor %}
+{% else %}
+    <p class="text-gray-500">No hay pedidos pendientes.</p>
+{% endif %}
+{% endblock %}

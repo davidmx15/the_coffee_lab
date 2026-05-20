@@ -1,0 +1,30 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4">Finalizar compra</h2>
+    
+    <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-bold text-lg mb-2">Resumen de tu pedido</h3>
+        <ul class="mb-4">
+            {% for item in items %}
+            <li class="flex justify-between border-b py-2">
+                <span>{{ item.cantidad }} x {{ item.kit.nombre }}</span>
+                <span>${{ item.subtotal }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="flex justify-between font-bold text-lg mb-4">
+            <span>Total</span>
+            <span>${{ total }}</span>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+                ✅ Confirmar pedido (simulado)
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

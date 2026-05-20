@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Coffee Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <nav class="bg-white shadow p-4 flex justify-between items-center">
+        <a href="{% url 'inicio' %}" class="text-xl font-bold">☕ The Coffee Lab</a>
+        <div class="flex items-center space-x-4">
+            {% if user.is_authenticated %}
+                <span class="text-gray-700">Hola, {{ user.username }}</span>
+                
+                {% if user.perfil.es_repartidor %}
+                    <!-- Menú para repartidor -->
+                    <a href="{% url 'perfil' %}" class="text-blue-600 hover:underline">Mi Perfil</a>
+                    <a href="{% url 'pedidos_pendientes' %}" class="text-orange-600 hover:underline">📦 Pedidos pendientes</a>
+                    <a href="{% url 'pedidos_completados' %}" class="text-green-600 hover:underline">✅ Completados</a>
+                {% else %}
+                    <!-- Menú para cliente normal -->
+                    <a href="{% url 'perfil' %}" class="text-blue-600 hover:underline">Mi Perfil</a>
+                    <a href="{% url 'ingredientes' %}" class="text-gray-700 hover:underline">Ingredientes</a>
+                    <a href="{% url 'crear_kit' %}" class="text-green-600 hover:underline">Crear Kit</a>
+                    <a href="{% url 'mis_kits' %}" class="text-purple-600 hover:underline">Mis Kits</a>
+                    <a href="{% url 'ver_carrito' %}" class="text-blue-600 hover:underline">🛒 Carrito</a>
+                    <a href="{% url 'mis_pedidos' %}" class="text-gray-700 hover:underline">📦 Mis pedidos</a>
+                    <a href="{% url 'barista' %}" class="text-purple-600 hover:underline">☕ Barista Virtual</a>
+                {% endif %}
+                
+                <form action="{% url 'logout' %}" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="text-red-600 hover:underline bg-transparent">Cerrar sesión</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Iniciar sesión</a>
+                <a href="{% url 'registro' %}" class="text-green-600 hover:underline">Registrarse</a>
+                <a href="{% url 'ingredientes' %}" class="text-gray-700 hover:underline">Ingredientes</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Asistente virtual flotante (solo para clientes normales) -->
+    {% if user.is_authenticated and not user.perfil.es_repartidor %}
+    <div class="fixed bottom-4 right-4 z-50">
+        <a href="{% url 'barista' %}">
+            <img id="robot-avatar" src="{% static 'img/robot_normal.png' %}" alt="Asistente Barista Virtual"
+                class="w-64 h-64 cursor-pointer transition-transform hover:scale-105"
+                onmouseover="this.src='{% static 'img/robot_hablando.png' %}'"
+                onmouseout="this.src='{% static 'img/robot_normal.png' %}'">
+        </a>
+    </div>
+    {% endif %}
+</body>
+
+</html>

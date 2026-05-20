@@ -1,0 +1,22 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Arma tu kit de café</h2>
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+    {% regroup ingredientes by get_categoria_display as categoria_list %}
+    {% for categoria in categoria_list %}
+        <div class="bg-gray-50 p-4 rounded">
+            <h3 class="font-bold text-lg mb-2">{{ categoria.grouper }}</h3>
+            {% for ing in categoria.list %}
+            <div class="flex items-center mb-2">
+                <input type="checkbox" name="ingredientes" value="{{ ing.id }}" id="ing_{{ ing.id }}" class="mr-2">
+                <label for="ing_{{ ing.id }}" class="flex-1">{{ ing.nombre }} - ${{ ing.precio }}</label>
+                <input type="number" name="cantidad_{{ ing.id }}" value="1" min="0" max="10" class="w-16 border rounded px-2 py-1">
+            </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Guardar kit</button>
+</form>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Mis pedidos</h2>
+
+{% if pedidos %}
+    {% for pedido in pedidos %}
+    <div class="bg-white p-4 rounded shadow mb-4">
+        <div class="flex justify-between items-center border-b pb-2 mb-2">
+            <span class="font-bold">Pedido #{{ pedido.id }}</span>
+            <span class="text-gray-600">{{ pedido.fecha|date:"d/m/Y H:i" }}</span>
+            <span class="px-2 py-1 rounded text-sm 
+                {% if pedido.estado == 'PENDIENTE' %}bg-yellow-200 text-yellow-800
+                {% elif pedido.estado == 'PREPARANDO' %}bg-blue-200 text-blue-800
+                {% elif pedido.estado == 'ENVIADO' %}bg-purple-200 text-purple-800
+                {% else %}bg-green-200 text-green-800{% endif %}">
+                {{ pedido.get_estado_display }}
+            </span>
+        </div>
+        <p class="text-gray-700">Total: <span class="font-bold">${{ pedido.total }}</span></p>
+        <ul class="mt-2 text-sm">
+            {% for item in pedido.pedidokit_set.all %}
+            <li>{{ item.cantidad }} x {{ item.kit.nombre }} - ${{ item.precio_unitario }} c/u</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+{% else %}
+    <p class="text-gray-500">No has realizado ningún pedido aún.</p>
+{% endif %}
+{% endblock %}

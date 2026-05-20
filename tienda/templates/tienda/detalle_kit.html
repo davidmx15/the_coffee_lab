@@ -1,0 +1,70 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h2 class="text-3xl font-bold mb-2">{{ kit.nombre }}</h2>
+    <p class="text-gray-500 mb-4">Creado: {{ kit.fecha_creacion|date:"d/m/Y H:i" }}</p>
+    
+    <div class="bg-white p-6 rounded shadow">
+        <h3 class="text-xl font-semibold mb-4">✨ Perfil de sabor</h3>
+        
+        <!-- Energía -->
+        <div class="mb-3">
+            <div class="flex justify-between">
+                <span>⚡ Energía</span>
+                <span>{{ atributos.energia }}/10</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: {{ atributos.energia_pct }}%"></div>
+            </div>
+        </div>
+        
+        <!-- Dulzor -->
+        <div class="mb-3">
+            <div class="flex justify-between">
+                <span>🍬 Dulzor</span>
+                <span>{{ atributos.dulzor }}/10</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="bg-pink-500 h-2.5 rounded-full" style="width: {{ atributos.dulzor_pct }}%"></div>
+            </div>
+        </div>
+        
+        <!-- Intensidad -->
+        <div class="mb-4">
+            <div class="flex justify-between">
+                <span>🔥 Intensidad</span>
+                <span>{{ atributos.intensidad }}/10</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="bg-red-600 h-2.5 rounded-full" style="width: {{ atributos.intensidad_pct }}%"></div>
+            </div>
+        </div>
+        
+        <div class="mt-4 p-3 bg-gray-100 rounded">
+            <span class="font-bold">Nombre sugerido:</span> {{ nombre_auto }}
+        </div>
+        
+        <div class="mt-6">
+            <h4 class="font-bold">Ingredientes:</h4>
+            <ul class="list-disc ml-6 mt-2">
+                {% for item in kit.kitingrediente_set.all %}
+                <li>{{ item.cantidad }} x {{ item.ingrediente.nombre }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="mt-6">
+            <p class="text-green-600 font-bold text-xl">Total: ${{ kit.calcular_total }}</p>
+        </div>
+        
+        <div class="mt-6 flex space-x-3">
+            <a href="{% url 'mis_kits' %}" class="bg-gray-500 text-white px-4 py-2 rounded">← Volver</a>
+            <form method="post" action="{% url 'agregar_al_carrito' kit.id %}">
+                {% csrf_token %}
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">🛒 Añadir al carrito</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
